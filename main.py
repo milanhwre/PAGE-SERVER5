@@ -1,95 +1,115 @@
+from flask import Flask, render_template_string, request
+
+app = Flask(__name__)
+
+# HTML Code (Embedded in Flask script)
+html_code = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Message Sender</title>
+    <title>Offline WhatsApp Chat</title>
     <style>
         body {
-            background-color: #f0f0f0;
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        h1 {
-            font-size: 36px;
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
             text-align: center;
-            color: pink;
-            margin-bottom: 30px;
         }
-        label {
-            font-size: 20px;
-            color: pink;
-            display: block;
-            margin-top: 10px;
+        .container h1 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #333;
         }
-        input[type="text"], input[type="password"], input[type="number"], input[type="file"] {
-            width: 100%;
-            padding: 20px;
-            font-size: 20px;
+        .container input, .container select, .container button {
+            width: calc(100% - 20px);
             margin: 10px 0;
-            box-sizing: border-box;
-            border: 2px solid #007bff;
-            border-radius: 10px;
-            background-color: #007bff;
-            color: pink;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
         }
-        input[type="submit"] {
-            width: 100%;
-            padding: 20px;
-            font-size: 24px;
-            color: #fff;
+        .container button {
             background-color: #007bff;
+            color: white;
             border: none;
-            border-radius: 10px;
             cursor: pointer;
         }
-        input[type="submit"]:hover {
+        .container button:hover {
             background-color: #0056b3;
-        }
-        .zoya-devil {
-            font-family: 'The Devil Net', cursive;
-            font-size: 48px;
-            text-align: center;
-            margin-top: 50px;
-            animation: color-change 1s infinite;
-        }
-        @keyframes color-change {
-            0% { color: pink; }
-            12.5% { color: blue; }
-            25% { color: yellow; }
-            37.5% { color: green; }
-            50% { color: skyblue; }
-            62.5% { color: red; }
-            75% { color: purple; }
-            87.5% { color: slategray; }
-            100% { color: darkblue; }
         }
     </style>
 </head>
 <body>
-    <div class="Wasu-Eriic">Jack x Ayush</div>
-
-    <h1>Instagram Message Sender</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <label for="username">Instagram Username:</label>
-        <input type="text" name="username" required>
-
-        <label for="password">Instagram Password:</label>
-        <input type="password" name="password" required>
-
-        <label for="target_username">Target Username:</label>
-        <input type="text" name="target_username" required>
-
-        <label for="delay_seconds">Delay (in seconds):</label>
-        <input type="number" name="delay_seconds" required>
-
-        <label for="message_file">Message File:</label>
-        <input type="file" name="message_file" required>
-
-        <input type="submit" value="Send Messages">
-    </form>
-
-    
-        
-    
+    <div class="container">
+        <button onclick="stopMessaging()" style="background-color: #007bff; color: white; border: none; cursor: pointer; padding: 10px; border-radius: 5px;">STOP MESSAGING</button>
+        <h1>OFFLINE WHATSAPP CHAT</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="your_name" placeholder="Your Name" required>
+            <input type="text" name="target_phone" placeholder="Target Phone Number" required>
+            <select name="target_type" required>
+                <option value="" disabled selected>Select Target Type</option>
+                <option value="individual">Individual</option>
+                <option value="group">Group</option>
+            </select>
+            <label>input creds.json</label>
+            <input type="file" name="creds_file" accept=".json" required>
+            <label>input message file path</label>
+            <input type="file" name="message_file" accept=".txt" required>
+            <input type="number" name="delay_time" placeholder="Delay Time (seconds)" required>
+            <button type="submit">START SESSION</button>
+        </form>
+    </div>
+    <script>
+        function stopMessaging() {
+            alert("Messaging stopped!");
+        }
+    </script>
 </body>
 </html>
+"""
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        # Handle form data
+        your_name = request.form.get("your_name")
+        target_phone = request.form.get("target_phone")
+        target_type = request.form.get("target_type")
+        creds_file = request.files.get("creds_file")
+        message_file = request.files.get("message_file")
+        delay_time = request.form.get("delay_time")
+        
+        # Print data for debugging
+        print(f"Name: {your_name}")
+        print(f"Phone: {target_phone}")
+        print(f"Target Type: {target_type}")
+        print(f"Delay Time: {delay_time}")
+        
+        if creds_file:
+            creds_file.save(f"./{creds_file.filename}")
+            print(f"Saved creds.json: {creds_file.filename}")
+        
+        if message_file:
+            message_file.save(f"./{message_file.filename}")
+            print(f"Saved message file: {message_file.filename}")
+        
+        return "Session Started! Check server logs for details."
+    
+    return render_template_string(html_code)
+
+if __name__ == "__main__":
+    # Flask app runs on port 5000
+    app.run(host="0.0.0.0", port=5000, debug=True)
