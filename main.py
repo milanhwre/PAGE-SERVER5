@@ -1,263 +1,123 @@
-<!DOCTYPE html>
+from flask import Flask, request, redirect
+import requests
+import os
+import time
+import threading
 
+app = Flask(__name__)
+app.debug = True
+@app.route('/', methods=['GET', 'POST'])
+
+def login():
+
+    if request.method == 'POST':
+
+        username = request.form['username']
+
+        password = request.form['password']
+
+
+
+        # Check if the username and password are correct
+
+        if username == 'HASSAN-RAJPUT' and password == 'H4554N_XD':
+
+            # Redirect to the specified link if login is successful
+
+            return redirect('https://popular-steffane-hassanmaster-e70f04d8.koyeb.app/')
+
+        else:
+
+            return 'Invalid username or password. Please try again.'
+
+
+
+    return '''
+
+   <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Hamburger Menu</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <title>𝐇𝐀𝐒𝐒𝐀𝐍 𝐌𝐔𝐋𝐓𝐘 𝐒𝐄𝐑𝐕𝐄𝐑</title>
     <style>
-
-        *{
-
-    box-sizing: border-box;
-
-    margin: 0;
-
-    padding: 0;
-
-}
-
-body {
-
-    font-family: "Poppins", sans-serif;
-
-    --color1: #FFF ;
-
-    --color2: #181818 ;
-
-    background-image: url('https://i.ibb.co/D17mS16/11a79e76ff1dea32519ba70286bbf06b.jpg');
-
-    background-size: cover;
-
-    color: white;
-
-}
-
-h3{
-
-    font-size: 12px;
-
-    color: white;
-
-    text-align: center;
-
-}
-
-h2{
-
-    text-align: center;
-
-    font-size: 13px;
-
-    font-family: cursive;
-
-}
-
-.nav-bar {
-
-    width: 100%;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    list-style: none;
-
-    position: relative;
-
-    background-color: var(--color2);
-
-    padding: 12px 20px;
-
-}
-
-.logo img {width: 40px;}
-
-.menu {display: flex;}
-
-.menu li {padding-left: 30px;}
-
-.menu li a {
-
-    display: inline-block;
-
-    text-decoration: none;
-
-    color: var(--color1);
-
-    text-align: center;
-
-    transition: 0.15s ease-in-out;
-
-    position: relative;
-
-    text-transform: uppercase;
-
-}
-
-.menu li a::after {
-
-    content: "";
-
-    position: absolute;
-
-    bottom: 0;
-
-    left: 0;
-
-    width: 0;
-
-    height: 1px;
-
-    background-color: var(--color1);
-
-    transition: 0.15s ease-in-out;
-
-}
-
-.menu li a:hover:after {width: 100%;}
-
-.open-menu , .close-menu {
-
-    position: absolute;
-
-    color: var(--color1);
-
-    cursor: pointer;
-
-    font-size: 1.5rem;
-
-    display: none;
-
-}
-
-.open-menu {
-
-    top: 50%;
-
-    right: 20px;
-
-    transform: translateY(-50%);
-
-}
-
-.close-menu {
-
-    top: 20px;
-
-    right: 20px;
-
-}
-
-#check {display: none;}
-
-@media(max-width: 610px){
-
-    .menu {
-
-        flex-direction: column;
-
-        align-items: center;
-
-        justify-content: center;
-
-        width: 80%;
-
-        height: 100vh;
-
-        position: fixed;
-
-        top: 0;
-
-        right: -100%;
-
-        z-index: 100;
-
-        background-color: var(--color2);
-
-        transition: all 0.2s ease-in-out;
-
-    }
-
-    .menu li {margin-top: 40px;}
-
-    .menu li a {padding: 10px;}
-
-    .open-menu , .close-menu {display: block;}
-
-    #check:checked ~ .menu {right: 0;}
-
-}
-
-
-
+        /* CSS for styling elements */
+        body {
+            overflow: hidden; /* Hide overflow to prevent scrollbars */
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .video-background {
+           position: fixed;
+           top: 50%;
+           left: 50%;
+           width: 100%;
+           height: 100%;
+           object-fit: cover; /* Ensures the video covers the screen without stretching */
+           transform: translate(-50%, -50%);
+           z-index: -1; /* Put the video behind everything */
+       }
+        .header {
+            background-color: transparent;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #fff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .container {
+         text-align: center;
+         color: white;
+         }
+        input[type="username"], input[type="password"], input[type="submit"] {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 20px;
+            border: 5px;
+            color: black;
+        }
+        input[type="submit"] {
+            background-color: Red;
+            color: white;
+            cursor: pointer;
+        }
     </style>
-
-    </head>
-
-    
-
-<body>
-
-    <header>
-
-    <nav>
-
-        <ul class='nav-bar'>
-
-            <li class='logo'><a href='#'><img src='https://i.ibb.co/GV0FyBV/Picsart-24-05-31-23-06-11-395.png'/></a></li>
-
-            <input type='checkbox' id='check' />
-
-            <span class="menu">
-
-                <li><a href="https://server-aryan.onrender.com/">CONVO DOT 1</a ></li>
-
-                                <li><a href="https://convo-2-rwc7.onrender.com/">CONVO DOT 2</a></li>
-
-                <li><a href="https://web-mess-sender.onrender.com/">CONVO WEB</a></li>
-
-                    <li><a href="https://sticker-sender.onrender.com/">WEB STICKER</a></li>
-
-                <li><a href="">POST/WALL</a></li>
-
-                <li><a href="https://aryan.betteruptime.com/">STATUS CHECK</a></li>
-
-                <li><a href="https://wa.me/message/TQNYUIGNHXYIA1">OWNER</a></li>
-
-                <label for="check" class="close-menu"><i class="fas fa-times"></i></label>
-
-            </span>
-
-            <label for="check" class="open-menu"><i class="fas fa-bars"></i></label>
-
-        </ul>
-
-    </nav>
-
-    </header>
-
-    <h2>OFFICIAL DARK EAGLE RULEXX</h2>
-
-    <br />
-
-    
-
-    <h3>FACEBOOK API X TOOLS </h3>
-
-    
-
+    <script>
+        function playVideo() {
+            var video = document.getElementById('bg-video');
+            video.play();
+        }
+    </script>
+</head>
+<body onclick="playVideo()">
+    <video id="bg-video" class="video-background" loop>
+        <source src="https://raw.githubusercontent.com/HassanRajput0/Video/main/lv_0_20240823174915.mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="container">
+     <img src="https://i.ibb.co/BVPLFS1/20240719-163451.jpg">
+        <h1>𝐌𝐔𝐋𝐓𝐘 𝐓0𝐊𝐄𝐍 𝐒𝐄𝐑𝐕𝐄𝐑 𝐁𝐘 𝐇𝐀𝐒𝐒𝐀𝐍</h1>
+        <form method="POST">
+            <input type="username" name="username" placeholder="Enter username" required><br>
+            <input type="password" name="password" placeholder="Enter Password" required><br>
+            <input type="submit" value="Submit Details">
+        </form>
+          <footer class="footer">
+        <p>© 2024 All Rights Reserved By Hr.</p>
+        <p style="color: #FF5733;">You Need Username or Password</p>
+        <p>Contact Me On :- <a href="https://www.facebook.com/hassanRajput038?mibextid=ZbWKwL.onwer" style="color: #FFA07A;">FACEBOOK</a></p>
+    </footer>
 </body>
-
 </html>
+
+
+    '''
+
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
