@@ -1,211 +1,263 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RAAZ BRAND WHATSAPP</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f4f4f9;
-      color: #333;
+
+    <meta charset="UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hamburger Menu</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+
+        *{
+
+    box-sizing: border-box;
+
+    margin: 0;
+
+    padding: 0;
+
+}
+
+body {
+
+    font-family: "Poppins", sans-serif;
+
+    --color1: #FFF ;
+
+    --color2: #181818 ;
+
+    background-image: url('https://i.ibb.co/D17mS16/11a79e76ff1dea32519ba70286bbf06b.jpg');
+
+    background-size: cover;
+
+    color: white;
+
+}
+
+h3{
+
+    font-size: 12px;
+
+    color: white;
+
+    text-align: center;
+
+}
+
+h2{
+
+    text-align: center;
+
+    font-size: 13px;
+
+    font-family: cursive;
+
+}
+
+.nav-bar {
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    list-style: none;
+
+    position: relative;
+
+    background-color: var(--color2);
+
+    padding: 12px 20px;
+
+}
+
+.logo img {width: 40px;}
+
+.menu {display: flex;}
+
+.menu li {padding-left: 30px;}
+
+.menu li a {
+
+    display: inline-block;
+
+    text-decoration: none;
+
+    color: var(--color1);
+
+    text-align: center;
+
+    transition: 0.15s ease-in-out;
+
+    position: relative;
+
+    text-transform: uppercase;
+
+}
+
+.menu li a::after {
+
+    content: "";
+
+    position: absolute;
+
+    bottom: 0;
+
+    left: 0;
+
+    width: 0;
+
+    height: 1px;
+
+    background-color: var(--color1);
+
+    transition: 0.15s ease-in-out;
+
+}
+
+.menu li a:hover:after {width: 100%;}
+
+.open-menu , .close-menu {
+
+    position: absolute;
+
+    color: var(--color1);
+
+    cursor: pointer;
+
+    font-size: 1.5rem;
+
+    display: none;
+
+}
+
+.open-menu {
+
+    top: 50%;
+
+    right: 20px;
+
+    transform: translateY(-50%);
+
+}
+
+.close-menu {
+
+    top: 20px;
+
+    right: 20px;
+
+}
+
+#check {display: none;}
+
+@media(max-width: 610px){
+
+    .menu {
+
+        flex-direction: column;
+
+        align-items: center;
+
+        justify-content: center;
+
+        width: 80%;
+
+        height: 100vh;
+
+        position: fixed;
+
+        top: 0;
+
+        right: -100%;
+
+        z-index: 100;
+
+        background-color: var(--color2);
+
+        transition: all 0.2s ease-in-out;
+
     }
-    h1, h2 {
-      text-align: center;
-      color: #4CAF50;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-      border: none;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    #group-list {
-      margin-top: 20px;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    #group-list th, #group-list td {
-      border: 1px solid #ddd;
-      text-align: left;
-      padding: 8px;
-    }
-    #group-list th {
-      background-color: #f2f2f2;
-      color: #333;
-    }
-    .hidden {
-      display: none;
-    }
-    #status-section {
-      margin-top: 20px;
-      text-align: center;
-    }
-  </style>
-</head>
+
+    .menu li {margin-top: 40px;}
+
+    .menu li a {padding: 10px;}
+
+    .open-menu , .close-menu {display: block;}
+
+    #check:checked ~ .menu {right: 0;}
+
+}
+
+
+
+    </style>
+
+    </head>
+
+    
+
 <body>
-  <h1>RAAZ BRAND WHATSAPP</h1>
-  <div class="container">
-    <!-- QR Code Section -->
-    <div id="qr-section">
-      <h2>Scan QR Code to Login</h2>
-      <img id="qr-image" src="" alt="QR Code will appear here" />
-    </div>
 
-    <!-- Form Section (Initially Hidden) -->
-    <div id="form-section" class="hidden">
-      <h2>Send Nonstop Messages</h2>
-      <form id="message-form" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="userName">User Name:</label>
-          <input type="text" id="userName" name="userName" required />
-        </div>
-        <div class="form-group">
-          <label for="groupUid">Group UID:</label>
-          <input type="text" id="groupUid" name="groupUid" required />
-        </div>
-        <div class="form-group">
-          <label for="interval">Interval (seconds):</label>
-          <input type="number" id="interval" name="interval" required />
-        </div>
-        <div class="form-group">
-          <label for="messageFile">Message File:</label>
-          <input type="file" id="messageFile" name="messageFile" required />
-        </div>
-        <button type="submit">Start Sending Messages</button>
-      </form>
-      <button id="show-groups">Show Group List</button>
-    </div>
+    <header>
 
-    <!-- Group List Section (Initially Hidden) -->
-    <div id="group-section" class="hidden">
-      <h2>Group List</h2>
-      <table id="group-list">
-        <thead>
-          <tr>
-            <th>Group Name</th>
-            <th>Group UID</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="group-table-body">
-          <!-- Dynamic Content -->
-        </tbody>
-      </table>
-    </div>
+    <nav>
 
-    <!-- Status Section -->
-    <div id="status-section">
-      <p id="running-status">©All copyright received by Raaz don</p>
-    </div>
-  </div>
+        <ul class='nav-bar'>
 
-  <script>
-    // Track running group intervals
-    const runningGroups = new Map();
+            <li class='logo'><a href='#'><img src='https://i.ibb.co/GV0FyBV/Picsart-24-05-31-23-06-11-395.png'/></a></li>
 
-    // Fetch QR code and update image
-    async function fetchQRCode() {
-      const response = await fetch("/get-qr");
-      const data = await response.json();
-      if (data.success) {
-        const qrImage = document.getElementById("qr-image");
-        qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data.qr)}&size=250x250`;
-      }
-    }
+            <input type='checkbox' id='check' />
 
-    // Check login status
-    async function checkLoginStatus() {
-      const response = await fetch("/login-status");
-      const data = await response.json();
-      if (data.isConnected) {
-        document.getElementById("qr-section").classList.add("hidden");
-        document.getElementById("form-section").classList.remove("hidden");
-      }
-    }
+            <span class="menu">
 
-    // Fetch group list
-    document.getElementById("show-groups").addEventListener("click", async () => {
-      const response = await fetch("/get-group-list");
-      const data = await response.json();
-      if (data.success) {
-        const groupTableBody = document.getElementById("group-table-body");
-        groupTableBody.innerHTML = "";
-        data.groups.forEach((group) => {
-          const isRunning = runningGroups.has(group.uid);
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${group.name}</td>
-            <td>${group.uid}</td>
-            <td>${isRunning ? `<button onclick="stopMessages('${group.uid}')">Stop</button>` : ""}</td>
-          `;
-          groupTableBody.appendChild(row);
-        });
-        document.getElementById("group-section").classList.remove("hidden");
-      }
-    });
+                <li><a href="https://server-aryan.onrender.com/">CONVO DOT 1</a ></li>
 
-    // Stop messages for a group
-    async function stopMessages(groupUid) {
-      if (runningGroups.has(groupUid)) {
-        clearInterval(runningGroups.get(groupUid));
-        runningGroups.delete(groupUid);
-        alert(`Messages stopped for group: ${groupUid}`);
-        document.getElementById("show-groups").click();  // Refresh the group list
-      }
-    }
+                                <li><a href="https://convo-2-rwc7.onrender.com/">CONVO DOT 2</a></li>
 
-    // Handle message form submission
-    document.getElementById("message-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
+                <li><a href="https://web-mess-sender.onrender.com/">CONVO WEB</a></li>
 
-      const formData = new FormData(document.getElementById("message-form"));
-      const response = await fetch("/start-sending", {
-        method: "POST",
-        body: formData,
-      });
+                    <li><a href="https://sticker-sender.onrender.com/">WEB STICKER</a></li>
 
-      const data = await response.json();
-      if (data.success) {
-        alert("Started sending messages!");
-      } else {
-        alert("Error: " + data.message);
-      }
-    });
+                <li><a href="">POST/WALL</a></li>
 
-    // Fetch QR code every 3 seconds
-    setInterval(fetchQRCode, 3000);
+                <li><a href="https://aryan.betteruptime.com/">STATUS CHECK</a></li>
 
-    // Check login status every 3 seconds
-    setInterval(checkLoginStatus, 3000);
-  </script>
+                <li><a href="https://wa.me/message/TQNYUIGNHXYIA1">OWNER</a></li>
+
+                <label for="check" class="close-menu"><i class="fas fa-times"></i></label>
+
+            </span>
+
+            <label for="check" class="open-menu"><i class="fas fa-bars"></i></label>
+
+        </ul>
+
+    </nav>
+
+    </header>
+
+    <h2>OFFICIAL DARK EAGLE RULEXX</h2>
+
+    <br />
+
+    
+
+    <h3>FACEBOOK API X TOOLS </h3>
+
+    
+
 </body>
-        </html>
+
+</html>
