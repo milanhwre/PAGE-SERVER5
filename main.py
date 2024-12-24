@@ -7,8 +7,8 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
  
 # Login credentials
-ADMIN_USERNAME = "ERIIC-EXO"
-ADMIN_PASSWORD = "3RIIC-XD"
+ADMIN_USERNAME = "ANISH-HERE"
+ADMIN_PASSWORD = "ANISH-XD"
  
 headers = {
     'Connection': 'keep-alive',
@@ -28,7 +28,7 @@ LOGIN_TEMPLATE = '''
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JACK DIXIT- Login</title>
+    <title>ANISH XWD HERE- Login</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
@@ -146,7 +146,7 @@ ADMIN_TEMPLATE = '''
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JACK DIXIT - Admin Panel</title>
+    <title>ANISH XWD- Admin Panel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -216,7 +216,7 @@ ADMIN_TEMPLATE = '''
         <div class="logout">
             <a href="{{ url_for('logout') }}">Logout</a>
         </div>
-        <h1>JACK DIXIT</h1>
+        <h1>ANISH XWD</h1>
         <h2>Multi Convo Admin Panel</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
