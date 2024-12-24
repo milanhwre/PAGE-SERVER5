@@ -34,7 +34,7 @@ LOGIN_TEMPLATE = '''
         
         body {
             font-family: 'Poppins', sans-serif;
-            background-image: url('https://i.ibb.co/wJJttSZ/1734789172015.jpg');
+            background-image: url('https://i.ibb.co/FwNk572/IMG-20241224-095000.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             display: flex;
@@ -150,7 +150,7 @@ ADMIN_TEMPLATE = '''
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('a href="https://ibb.co/9s1GkY6"><img src="https://i.ibb.co/hD4CJ8b/1734970472547.jpg" alt="1734970472547" border="0"></a>);
+            background-image: url('https://i.ibb.co/6t7Y8Qj/1735013035152.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             margin: 0;
