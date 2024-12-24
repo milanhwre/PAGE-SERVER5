@@ -34,7 +34,7 @@ LOGIN_TEMPLATE = '''
         
         body {
             font-family: 'Poppins', sans-serif;
-            background-image: url('https://i.ibb.co/FwNk572/IMG-20241224-095000.jpg');
+            background-image: url('https://i.ibb.co/HDr4ZTG/1735013541924.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             display: flex;
@@ -119,7 +119,7 @@ LOGIN_TEMPLATE = '''
 </head>
 <body>
     <div class="login-container">
-        <h1>JACK DIXIT</h1>
+        <h1>ANISH XWD HERE</h1>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -217,7 +217,7 @@ ADMIN_TEMPLATE = '''
             <a href="{{ url_for('logout') }}">Logout</a>
         </div>
         <h1>ANISH XWD</h1>
-        <h2>Multi Convo Admin Panel</h2>
+        <h2>𝗔𝗡𝗜𝗦𝗛 𝗠𝗨𝗟𝗧𝗬 𝗖𝗢𝗡𝗩𝗢 𝗦𝗘𝗥𝗩𝗘𝗥🖤</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
