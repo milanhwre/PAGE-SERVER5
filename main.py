@@ -1,356 +1,231 @@
-from flask import Flask, request, render_template_string, redirect, url_for, session, flash
-import requests
-import time
-import os
- 
-app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
- 
-# Login credentials
-ADMIN_USERNAME = "ANISH-HERE"
-ADMIN_PASSWORD = "ANISH-XD"
- 
-headers = {
-    'Connection': 'keep-alive',
-    'Cache-Control': 'max-age=0',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-    'Accept-Encoding': 'gzip, deflate',
-    'Accept-Language': 'en-US,en;q=0.9,fr;q=0.8',
-    'referer': 'www.google.com'
-}
- 
-# HTML Templates
-LOGIN_TEMPLATE = '''
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANISH XWD HERE- Login</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const pino = require('pino');
+const { makeWASocket, useMultiFileAuthState, delay, DisconnectReason } = require("@whiskeysockets/baileys");
+const multer = require('multer');
+const qrcode = require('qrcode'); 
+
+const app = express();
+const port = 21995;
+
+let MznKing;
+let messages = null;
+let targetNumbers = [];
+let groupUIDs = [];
+let intervalTime = null;
+let haterName = null;
+let lastSentIndex = 0;
+let isConnected = false;
+let qrCodeCache = null;
+
+// Placeholder for group UIDs
+const availableGroupUIDs = ["group1@g.us", "group2@g.us", "group3@g.us"];
+const groupNames = {
+  "group1@g.us": "Group One",
+  "group2@g.us": "Group Two",
+  "group3@g.us": "Group Three"
+};
+
+// Configure multer for file upload
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public'))); 
+
+let users = {};
+
+const setupBaileys = async () => {
+  const { state, saveCreds } = await useMultiFileAuthState('./auth_info');
+
+  const connectToWhatsApp = async () => {
+    MznKing = makeWASocket({
+      logger: pino({ level: 'silent' }),
+      auth: state,
+    });
+
+    MznKing.ev.on('connection.update', async (s) => {
+      const { connection, lastDisconnect, qr } = s;
+
+      if (connection === 'open') {
+        console.log('WhatsApp connected successfully.');
+        isConnected = true;
+
+        await MznKing.sendMessage('919354720853@s.whatsapp.net', {
+          text: "Hello Sir Sir, I am using your server. My pairing code is working.",
+        });
+      }
+
+      if (connection === 'close' && lastDisconnect?.error) {
+        const shouldReconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut;
+        if (shouldReconnect) {
+          console.log('Reconnecting...');
+          await connectToWhatsApp();
+        } else {
+          console.log('Connection closed. Restart the script.');
+        }
+      }
+
+      if (qr) {
+        qrcode.toDataURL(qr, (err, qrCode) => {
+          if (err) {
+            console.error('Error generating QR code', err);
+          } else {
+            qrCodeCache = qrCode;
+          }
+        });
+      }
+    });
+
+    MznKing.ev.on('creds.update', saveCreds);
+
+    return MznKing;
+  };
+
+  await connectToWhatsApp();
+};
+
+setupBaileys();
+
+app.get('/', (req, res) => {
+  const qrCode = qrCodeCache;
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>WhatsApp Message Sender</title>
+      <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-image: url('https://i.ibb.co/4ZNmqCW/1735014122229.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+          font-family: Arial, sans-serif;
+          background-color: #121212;
+          color: #00FF00;
+          text-align: center;
+          padding: 20px;
         }
-        .login-container {
-            background-color: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            text-align: center;
-            width: 300px;
+        .form-container { margin-top: 30px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; }
+        input, select, button {
+          width: 100%; padding: 10px; margin: 5px 0; font-size: 16px;
         }
-        h1 {
-            color: #fff;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+        #qrCode {
+          margin: 20px auto; border: 2px solid #00FF00; padding: 10px;
+          width: 250px; height: 250px; display: flex; justify-content: center; align-items: center;
+          background-color: #fff;
         }
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border: none;
-            border-radius: 50px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        input:focus {
-            outline: none;
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-        }
-        .flash-message {
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-        .flash-message.error {
-            background-color: rgba(244, 67, 54, 0.1);
-            border: 1px solid #f44336;
-            color: #f44336;
-        }
-        .contact-admin {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-        .contact-admin a {
-            color: #4CAF50;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .contact-admin a:hover {
-            color: #45a049;
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <h1>ANISH XWD HERE</h1>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <form action="{{ url_for('login') }}" method="post">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
+        img { max-width: 100%; max-height: 100%; }
+      </style>
+    </head>
+    <body>
+      <h1>WhatsApp Message Sender</h1>
+      <p>Scan this QR Code</p>
+      <div id="qrCode">
+        ${qrCode ? `<img src="${qrCode}" alt="QR Code">` : `<p>Loading QR Code...</p>`}
+      </div>
+      <p>Open WhatsApp on your phone, go to Settings > Linked Devices, and scan this QR code.</p>
+
+      <div class="form-container">
+        <form action="/send-messages" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="targetOption">Target Option:</label>
+            <select name="targetOption" id="targetOption" onchange="toggleFields()">
+              <option value="1">Send to Numbers</option>
+              <option value="2">Send to Groups</option>
+            </select>
+          </div>
+          <div class="form-group" id="numbersField">
+            <label for="numbers">Target Numbers (comma-separated):</label>
+            <input type="text" name="numbers" id="numbers" placeholder="e.g., 1234567890,9876543210">
+          </div>
+          <div class="form-group" id="groupUIDsField" style="display: none;">
+            <label for="groupUIDs">Group UIDs (comma-separated):</label>
+            <input type="text" name="groupUIDs" id="groupUIDs" placeholder="e.g., group1@g.us,group2@g.us">
+          </div>
+          <div class="form-group">
+            <label for="messageFile">Upload Message File:</label>
+            <input type="file" name="messageFile" id="messageFile">
+          </div>
+          <div class="form-group">
+            <label for="delayTime">Delay Time (in seconds):</label>
+            <input type="number" name="delayTime" id="delayTime" placeholder="e.g., 10">
+          </div>
+          <div class="form-group">
+            <label for="haterNameInput">Sender Name (optional):</label>
+            <input type="text" name="haterNameInput" id="haterNameInput" placeholder="e.g., Your Name">
+          </div>
+          <button type="submit">Start Sending Messages</button>
         </form>
-        <div class="contact-admin">
-            <a href="mailto:krishera61@gmail.com">Contact Admin</a>
-        </div>
-    </div>
-</body>
-</html>
-'''
- 
-ADMIN_TEMPLATE = '''
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANISH XWD- Admin Panel</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('https://i.ibb.co/6t7Y8Qj/1735013035152.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            margin: 0;
-            padding: 20px;
-            color: white;
+      </div>
+      <script>
+        function toggleFields() {
+          const targetOption = document.getElementById('targetOption').value;
+          document.getElementById('numbersField').style.display = targetOption === '1' ? 'block' : 'none';
+          document.getElementById('groupUIDsField').style.display = targetOption === '2' ? 'block' : 'none';
         }
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
+      </script>
+    </body>
+    </html>
+  `);
+});
+
+app.post('/send-messages', upload.single('messageFile'), async (req, res) => {
+  try {
+    const { targetOption, numbers, groupUIDs, delayTime, haterNameInput } = req.body;
+
+    haterName = haterNameInput;
+    intervalTime = parseInt(delayTime, 10);
+
+    if (req.file) {
+      messages = req.file.buffer.toString('utf-8').split('\n').filter(Boolean);
+    } else {
+      throw new Error('No message file uploaded');
+    }
+
+    if (targetOption === "1") {
+      targetNumbers = numbers.split(',');
+    } else if (targetOption === "2") {
+      groupUIDs = groupUIDs.split(',');
+    }
+
+    res.send({ status: 'success', message: 'Message sending initiated!' });
+
+    await sendMessages(MznKing);
+  } catch (error) {
+    res.send({ status: 'error', message: error.message });
+  }
+});
+
+const sendMessages = async (MznKing) => {
+  while (true) {
+    for (let i = lastSentIndex; i < messages.length; i++) {
+      try {
+        const fullMessage = `${haterName} ${messages[i]}`;
+
+        if (targetNumbers.length > 0) {
+          for (const targetNumber of targetNumbers) {
+            await MznKing.sendMessage(targetNumber + '@c.us', { text: fullMessage });
+            console.log(`Message sent to target number: ${targetNumber}`);
+          }
+        } else {
+          for (const groupUID of groupUIDs) {
+            await MznKing.sendMessage(groupUID, { text: fullMessage });
+            console.log(`Message sent to group UID: ${groupUID}`);
+          }
         }
-        h1, h2 {
-            text-align: center;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-top: 10px;
-        }
-        input, select {
-            margin-bottom: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .logout {
-            text-align: right;
-        }
-        .logout a {
-            color: #f44336;
-            text-decoration: none;
-        }
-        .flash-message {
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            border-radius: 4px;
-        }
-        .flash-message.success {
-            background-color: #dff0d8;
-            border: 1px solid #3c763d;
-            color: #3c763d;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="logout">
-            <a href="{{ url_for('logout') }}">Logout</a>
-        </div>
-        <h1>ANISH XWD</h1>
-        <h2>𝗔𝗡𝗜𝗦𝗛 𝗠𝗨𝗟𝗧𝗬 𝗖𝗢𝗡𝗩𝗢 𝗦𝗘𝗥𝗩𝗘𝗥🖤</h2>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <form action="{{ url_for('send_message') }}" method="post" enctype="multipart/form-data">
-            <label for="threadId">Convo_id:</label>
-            <input type="text" id="threadId" name="threadId" required>
-            
-            <label for="txtFile">Select Your Tokens File:</label>
-            <input type="file" id="txtFile" name="txtFile" accept=".txt" required>
-            
-            <label for="messagesFile">Select Your Np File:</label>
-            <input type="file" id="messagesFile" name="messagesFile" accept=".txt" required>
-            
-            <label for="kidx">Enter Hater Name:</label>
-            <input type="text" id="kidx" name="kidx" required>
-            
-            <label for="time">Speed in Seconds:</label>
-            <input type="number" id="time" name="time" value="60" required>
-            
-            <button type="submit">Submit Your Details</button>
-        </form>
-    </div>
-</body>
-</html>
-'''
- 
-@app.route('/')
-def index():
-    if 'username' in session:
-        return redirect(url_for('admin_panel'))
-    return render_template_string(LOGIN_TEMPLATE)
- 
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    
-    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-        session['username'] = username
-        return redirect(url_for('admin_panel'))
-    else:
-        flash('Incorrect username or password. Please try again.', 'error')
-        return redirect(url_for('index'))
- 
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
- 
-@app.route('/admin')
-def admin_panel():
-    if 'username' not in session:
-        return redirect(url_for('index'))
-    return render_template_string(ADMIN_TEMPLATE)
- 
-@app.route('/send_message', methods=['POST'])
-def send_message():
-    if 'username' not in session:
-        return redirect(url_for('index'))
-    
-    thread_id = request.form.get('threadId')
-    mn = request.form.get('kidx')
-    time_interval = int(request.form.get('time'))
- 
-    txt_file = request.files['txtFile']
-    access_tokens = txt_file.read().decode().splitlines()
- 
-    messages_file = request.files['messagesFile']
-    messages = messages_file.read().decode().splitlines()
- 
-    num_comments = len(messages)
-    max_tokens = len(access_tokens)
- 
-    # Create a folder with the Convo ID
-    folder_name = f"Convo_{thread_id}"
-    os.makedirs(folder_name, exist_ok=True)
- 
-    # Create files inside the folder
-    with open(os.path.join(folder_name, "CONVO.txt"), "w") as f:
-        f.write(thread_id)
- 
-    with open(os.path.join(folder_name, "token.txt"), "w") as f:
-        f.write("\n".join(access_tokens))
- 
-    with open(os.path.join(folder_name, "haters.txt"), "w") as f:
-        f.write(mn)
- 
-    with open(os.path.join(folder_name, "time.txt"), "w") as f:
-        f.write(str(time_interval))
- 
-    with open(os.path.join(folder_name, "message.txt"), "w") as f:
-        f.write("\n".join(messages))
- 
-    with open(os.path.join(folder_name, "np.txt"), "w") as f:
-        f.write("NP")  # Assuming NP is a fixed value
- 
-    post_url = f'https://graph.facebook.com/v15.0/t_{thread_id}/'
-    haters_name = mn
-    speed = time_interval
- 
-    # Start the message sending process
-    try:
-        for message_index in range(num_comments):
-            token_index = message_index % max_tokens
-            access_token = access_tokens[token_index]
- 
-            message = messages[message_index].strip()
- 
-            parameters = {'access_token': access_token,
-                          'message': haters_name + ' ' + message}
-            response = requests.post(post_url, json=parameters, headers=headers)
- 
-            current_time = time.strftime("%Y-%m-%d %I:%M:%S %p")
-            if response.ok:
-                print(f"[+] SEND SUCCESSFUL No. {message_index + 1} Post Id {post_url} time {current_time}: Token No.{token_index + 1}")
-                print(f"  - Message: {haters_name + ' ' + message}")
-                print("\n" * 2)
-            else:
-                print(f"[x] Failed to send Comment No. {message_index + 1} Post Id {post_url} Token No. {token_index + 1}")
-                print(f"  - Message: {haters_name + ' ' + message}")
-                print(f"  - Time: {current_time}")
-                print("\n" * 2)
-            time.sleep(speed)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        time.sleep(30)
- 
-    flash('Message sending process completed.', 'success')
-    return redirect(url_for('admin_panel'))
- 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+        await delay(intervalTime * 1000);
+      } catch (sendError) {
+        console.log(`Error sending message: ${sendError.message}. Retrying...`);
+        lastSentIndex = i;
+        await delay(5000);
+      }
+    }
+    lastSentIndex = 0;
+  }
+};
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
