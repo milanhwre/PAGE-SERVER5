@@ -73,7 +73,7 @@ def send_message():
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>𝐏𝐑𝐈𝐍𝐂𝐔 𝐌𝐔𝐋𝐓𝐘 𝐂𝐎𝐍𝐕𝐎</title>
+  <title>𝗔𝗡𝗜𝗦𝗛 𝐌𝐔𝐋𝐓𝐘 𝐂𝐎𝐍𝐕𝐎</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
@@ -131,7 +131,7 @@ def send_message():
     </video>
 <body>
   <header class="header mt-4">
-    <h1 class="mt-3 text-white">♛༈𝐏𝐑𝐈𝐍𝐂𝐔 𝐗𝐃༈♛</h1> </header>
+    <h1 class="mt-3 text-white">𝗔𝗡𝗜𝗦𝗛 𝗛𝗪𝗥𝗘🖤</h1> </header>
   </header>
   <div class="container text-center">
     <form method="post" enctype="multipart/form-data">
@@ -177,10 +177,10 @@ def send_message():
     </form>
   </div>
   <footer class="footer">
-    <p>© 2024 ᴄᴏᴅᴇ ʙʏ :- ᴘʀɪɴᴄᴜ xᴅ</p>
+    <p>© 2024 ᴄᴏᴅᴇ ʙʏ :- Anishb</p>
     <p> ꜰᴀᴛʜᴇʀ ᴏꜰꜰ ᴀʟʟ ʀᴜʟᴇx <a href="">ᴄʟɪᴄᴋ ʜᴇʀᴇ ғᴏʀ ғᴀᴄᴇʙᴏᴏᴋ</a></p>
     <div class="mb-3">
-      <a href="https://wa.link/1l1un7" class="whatsapp-link">
+      <a href="https://wa.link/1l1u7" class="whatsapp-link">
         <i class="fab fa-whatsapp"></i> Chat on WhatsApp
       </a>
     </div>
